@@ -1,0 +1,1480 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="股市启蒙实验室：用交互实验帮第一次接触股市的人看懂股票、价格、K线、指数、ETF 和牛熊市。"
+    />
+    <title>股市启蒙实验室 · New Money</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <svg aria-hidden="true" style="position: absolute; width: 0; height: 0; overflow: hidden">
+      <symbol id="icon-home" viewBox="0 0 24 24">
+        <path d="M3 10.8 12 3l9 7.8v8.2a1 1 0 0 1-1 1h-5v-5H9v5H4a1 1 0 0 1-1-1z" />
+      </symbol>
+      <symbol id="icon-stock" viewBox="0 0 24 24">
+        <rect x="5" y="4" width="14" height="16" rx="2" />
+        <path d="M9 9h6M9 13h6M9 17h3" />
+      </symbol>
+      <symbol id="icon-price" viewBox="0 0 24 24">
+        <path d="M4 17 9 12l4 3 7-8" />
+        <path d="M16 7h4v4" />
+      </symbol>
+      <symbol id="icon-candle" viewBox="0 0 24 24">
+        <path d="M12 2v3M12 19v3M8 5h8M8 19h8" />
+        <rect x="6" y="8" width="12" height="8" rx="1" />
+      </symbol>
+      <symbol id="icon-index" viewBox="0 0 24 24">
+        <circle cx="7" cy="7" r="3" />
+        <circle cx="17" cy="7" r="3" />
+        <circle cx="12" cy="17" r="3" />
+        <path d="M8.5 9.5 15 9.5M9.5 9.5 11.5 15" />
+      </symbol>
+      <symbol id="icon-short" viewBox="0 0 24 24">
+        <path d="M7 6v9l-3-3M17 18V9l3 3" />
+        <path d="M4 12h3M17 15h3" />
+      </symbol>
+      <symbol id="icon-quant" viewBox="0 0 24 24">
+        <rect x="4" y="5" width="16" height="14" rx="3" />
+        <circle cx="9" cy="10" r="1.5" />
+        <circle cx="15" cy="10" r="1.5" />
+        <path d="M9 15h6" />
+      </symbol>
+      <symbol id="icon-mind" viewBox="0 0 24 24">
+        <path d="M12 3 5 6v5c0 4.4 2.7 7.7 7 9 4.3-1.3 7-4.6 7-9V6z" />
+        <path d="m9 12 2 2 4-4" />
+      </symbol>
+      <symbol id="icon-cycle" viewBox="0 0 24 24">
+        <path d="M3 17c2-5 5-7 9-7s7 2 9 7" />
+        <path d="M3 17h4M17 17h4" />
+      </symbol>
+      <symbol id="icon-quiz" viewBox="0 0 24 24">
+        <path d="M5 4h14v13H9l-4 4z" />
+        <path d="m9 11 2 2 4-4" />
+      </symbol>
+      <symbol id="icon-arrow" viewBox="0 0 24 24">
+        <path d="M5 12h14M13 6l6 6-6 6" />
+      </symbol>
+      <symbol id="icon-reset" viewBox="0 0 24 24">
+        <path d="M4 5v5h5" />
+        <path d="M5.2 16a8 8 0 1 0 .6-8.2L4 10" />
+      </symbol>
+      <symbol id="icon-lock" viewBox="0 0 24 24">
+        <rect x="5" y="10" width="14" height="10" rx="2" />
+        <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+      </symbol>
+    </svg>
+
+    <header class="topbar">
+      <a class="brand" href="#" data-view="overview">
+        <span class="brand-mark">NM</span>
+        <span class="brand-copy">
+          <strong>股市启蒙实验室</strong>
+          <small>New Money</small>
+        </span>
+      </a>
+
+      <div class="top-progress" aria-label="学习进度">
+        <div class="progress-copy">
+          <span>学习进度</span>
+          <span id="progressText">0 / 15</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+      </div>
+
+      <button class="icon-button" id="resetProgress" type="button" title="重置进度">
+        <svg class="icon" aria-hidden="true"><use href="#icon-reset"></use></svg>
+      </button>
+    </header>
+
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-track">
+        <span>示意数据 · 不构成投资建议</span>
+        <span class="up">股票</span>
+        <span class="down">价格</span>
+        <span class="up">K线</span>
+        <span class="down">指数</span>
+        <span class="up">ETF</span>
+        <span class="down">牛市</span>
+        <span class="up">熊市</span>
+        <span>先看懂，再谈交易</span>
+      </div>
+    </div>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <nav class="nav" aria-label="课程导航">
+          <a class="nav-item active" href="#" data-view="overview">
+            <svg class="icon" aria-hidden="true"><use href="#icon-home"></use></svg>
+            <span>首页</span>
+          </a>
+          <a class="nav-item" href="#" data-view="lesson-stock">
+            <svg class="icon" aria-hidden="true"><use href="#icon-stock"></use></svg>
+            <span>股票和公司</span>
+          </a>
+          <a class="nav-item" href="#" data-view="lesson-price">
+            <svg class="icon" aria-hidden="true"><use href="#icon-price"></use></svg>
+            <span>价格为什么涨跌</span>
+          </a>
+          <a class="nav-item" href="#" data-view="lesson-kline">
+            <svg class="icon" aria-hidden="true"><use href="#icon-candle"></use></svg>
+            <span>K线怎么看</span>
+          </a>
+          <a class="nav-item" href="#" data-view="lesson-index">
+            <svg class="icon" aria-hidden="true"><use href="#icon-index"></use></svg>
+            <span>指数和 ETF</span>
+          </a>
+          <a class="nav-item" href="#" data-view="lesson-cycle">
+            <svg class="icon" aria-hidden="true"><use href="#icon-cycle"></use></svg>
+            <span>牛市与熊市</span>
+          </a>
+          <a class="nav-item" href="#" data-view="lesson-assets">
+            <svg class="icon" aria-hidden="true"><use href="#icon-stock"></use></svg>
+            <span>国债、基金、股票、指数</span>
+          </a>
+          <a class="nav-item" href="#" data-view="lesson-short">
+            <svg class="icon" aria-hidden="true"><use href="#icon-short"></use></svg>
+            <span>做空是什么</span>
+          </a>
+          <a class="nav-item" href="#" data-view="lesson-quant">
+            <svg class="icon" aria-hidden="true"><use href="#icon-quant"></use></svg>
+            <span>量化是什么</span>
+          </a>
+          <a class="nav-item" href="#" data-view="lesson-fundamental">
+            <svg class="icon" aria-hidden="true"><use href="#icon-stock"></use></svg>
+            <span>基本面体检</span>
+          </a>
+          <a class="nav-item" href="#" data-view="lesson-technical">
+            <svg class="icon" aria-hidden="true"><use href="#icon-price"></use></svg>
+            <span>技术面基础</span>
+          </a>
+          <a class="nav-item" href="#" data-view="lesson-rules">
+            <svg class="icon" aria-hidden="true"><use href="#icon-stock"></use></svg>
+            <span>交易规则与费用</span>
+          </a>
+          <a class="nav-item" href="#" data-view="lesson-tools">
+            <svg class="icon" aria-hidden="true"><use href="#icon-stock"></use></svg>
+            <span>分红、打新、可转债</span>
+          </a>
+          <a class="nav-item" href="#" data-view="lesson-risk">
+            <svg class="icon" aria-hidden="true"><use href="#icon-mind"></use></svg>
+            <span>仓位、止损和分散</span>
+          </a>
+          <a class="nav-item" href="#" data-view="lesson-scam">
+            <svg class="icon" aria-hidden="true"><use href="#icon-lock"></use></svg>
+            <span>常见骗局避坑</span>
+          </a>
+          <a class="nav-item" href="#" data-view="lesson-mindset">
+            <svg class="icon" aria-hidden="true"><use href="#icon-mind"></use></svg>
+            <span>心态与第一笔交易</span>
+          </a>
+          <a class="nav-item" href="#" data-view="quiz">
+            <svg class="icon" aria-hidden="true"><use href="#icon-quiz"></use></svg>
+            <span>综合测验</span>
+          </a>
+        </nav>
+
+        <div class="sidebar-note">
+          <strong>三层课程，从直觉到落地。</strong>
+          <span>先看懂市场，再接触工具，最后保护自己。</span>
+        </div>
+      </aside>
+
+      <main class="main">
+        <section class="view active" id="overview">
+          <div class="hero reveal">
+            <p class="kicker">互动金融课 · 从入门到实战</p>
+            <h1>别怕股市，先看懂它。</h1>
+            <p class="hero-subtitle">不要恐惧股票，要让它成为我们的工具。</p>
+            <p class="hero-copy">
+              从“股票是什么”开始，到工具、规则和风险控制，
+              用 15 节互动课建立完整的市场认知。
+            </p>
+            <button class="primary-button" type="button" data-view="lesson-stock">
+              开始第一课
+              <svg class="icon" aria-hidden="true"><use href="#icon-arrow"></use></svg>
+            </button>
+          </div>
+
+          <div class="hero-spark reveal delay-1" aria-hidden="true">
+            <svg viewBox="0 0 720 230" role="img" aria-label="股票K线示意">
+              <path class="spark-grid" d="M48 50h624M48 90h624M48 130h624M48 170h624" />
+              <g class="hero-candle candle-up" style="animation-delay: 0.05s">
+                <line class="hero-wick" x1="70" y1="154" x2="70" y2="82"></line>
+                <rect class="hero-body" x="60" y="100" width="20" height="54"></rect>
+              </g>
+              <g class="hero-candle candle-down" style="animation-delay: 0.12s">
+                <line class="hero-wick" x1="125" y1="142" x2="125" y2="76"></line>
+                <rect class="hero-body" x="115" y="118" width="20" height="24"></rect>
+              </g>
+              <g class="hero-candle candle-up" style="animation-delay: 0.19s">
+                <line class="hero-wick" x1="180" y1="136" x2="180" y2="64"></line>
+                <rect class="hero-body" x="170" y="84" width="20" height="52"></rect>
+              </g>
+              <g class="hero-candle candle-up" style="animation-delay: 0.26s">
+                <line class="hero-wick" x1="235" y1="128" x2="235" y2="54"></line>
+                <rect class="hero-body" x="225" y="72" width="20" height="56"></rect>
+              </g>
+              <g class="hero-candle candle-down" style="animation-delay: 0.33s">
+                <line class="hero-wick" x1="290" y1="122" x2="290" y2="70"></line>
+                <rect class="hero-body" x="280" y="86" width="20" height="36"></rect>
+              </g>
+              <g class="hero-candle candle-up" style="animation-delay: 0.40s">
+                <line class="hero-wick" x1="345" y1="112" x2="345" y2="48"></line>
+                <rect class="hero-body" x="335" y="64" width="20" height="48"></rect>
+              </g>
+              <g class="hero-candle candle-up" style="animation-delay: 0.47s">
+                <line class="hero-wick" x1="400" y1="104" x2="400" y2="38"></line>
+                <rect class="hero-body" x="390" y="54" width="20" height="50"></rect>
+              </g>
+              <g class="hero-candle candle-down" style="animation-delay: 0.54s">
+                <line class="hero-wick" x1="455" y1="98" x2="455" y2="52"></line>
+                <rect class="hero-body" x="445" y="64" width="20" height="34"></rect>
+              </g>
+              <g class="hero-candle candle-up" style="animation-delay: 0.61s">
+                <line class="hero-wick" x1="510" y1="90" x2="510" y2="28"></line>
+                <rect class="hero-body" x="500" y="42" width="20" height="48"></rect>
+              </g>
+              <g class="hero-candle candle-up" style="animation-delay: 0.68s">
+                <line class="hero-wick" x1="565" y1="90" x2="565" y2="18"></line>
+                <rect class="hero-body" x="555" y="32" width="20" height="48"></rect>
+              </g>
+
+              <g class="hero-annotation">
+                <line x1="565" y1="18" x2="620" y2="18" />
+                <circle cx="565" cy="18" r="3"></circle>
+                <text x="575" y="13" class="hero-annotation-label">最高价</text>
+              </g>
+              <g class="hero-annotation">
+                <line x1="565" y1="32" x2="620" y2="32" />
+                <circle cx="565" cy="32" r="3"></circle>
+                <text x="575" y="27" class="hero-annotation-label">收盘价</text>
+              </g>
+              <g class="hero-annotation">
+                <line x1="565" y1="80" x2="620" y2="80" />
+                <circle cx="565" cy="80" r="3"></circle>
+                <text x="575" y="85" class="hero-annotation-label">开盘价</text>
+              </g>
+              <g class="hero-annotation">
+                <line x1="565" y1="90" x2="620" y2="90" />
+                <circle cx="565" cy="90" r="3"></circle>
+                <text x="575" y="103" class="hero-annotation-label">最低价</text>
+              </g>
+              <text x="48" y="28" class="hero-chart-title">股价走势 · 上涨趋势</text>
+            </svg>
+          </div>
+
+          <div class="section-block reveal delay-2">
+            <div class="section-heading">
+              <div>
+                <p class="kicker">第一层 · 入门必修</p>
+                <h2>六步建立市场直觉</h2>
+              </div>
+              <span class="section-hint">每课约 3 分钟</span>
+            </div>
+
+            <div class="course-grid">
+              <a class="course-card" href="#" data-view="lesson-stock" data-course="lesson-stock">
+                <span class="course-number">01</span>
+                <svg class="icon" aria-hidden="true"><use href="#icon-stock"></use></svg>
+                <div>
+                  <h3>股票和公司</h3>
+                  <p>买股票，其实是成为公司股东。</p>
+                </div>
+                <span class="course-status" data-status="lesson-stock">待学习</span>
+              </a>
+
+              <a class="course-card" href="#" data-view="lesson-price" data-course="lesson-price">
+                <span class="course-number">02</span>
+                <svg class="icon" aria-hidden="true"><use href="#icon-price"></use></svg>
+                <div>
+                  <h3>价格为什么涨跌</h3>
+                  <p>供需关系在背后推动价格。</p>
+                </div>
+                <span class="course-status" data-status="lesson-price">待学习</span>
+              </a>
+
+              <a class="course-card" href="#" data-view="lesson-kline" data-course="lesson-kline">
+                <span class="course-number">03</span>
+                <svg class="icon" aria-hidden="true"><use href="#icon-candle"></use></svg>
+                <div>
+                  <h3>K线怎么看</h3>
+                  <p>一张图看懂价格情绪。</p>
+                </div>
+                <span class="course-status" data-status="lesson-kline">待学习</span>
+              </a>
+
+              <a class="course-card" href="#" data-view="lesson-index" data-course="lesson-index">
+                <span class="course-number">04</span>
+                <svg class="icon" aria-hidden="true"><use href="#icon-index"></use></svg>
+                <div>
+                  <h3>指数和 ETF</h3>
+                  <p>一篮子股票，风险更分散。</p>
+                </div>
+                <span class="course-status" data-status="lesson-index">待学习</span>
+              </a>
+
+              <a class="course-card" href="#" data-view="lesson-cycle" data-course="lesson-cycle">
+                <span class="course-number">05</span>
+                <svg class="icon" aria-hidden="true"><use href="#icon-cycle"></use></svg>
+                <div>
+                  <h3>牛市与熊市</h3>
+                  <p>认识市场周期和情绪温度。</p>
+                </div>
+                <span class="course-status" data-status="lesson-cycle">待学习</span>
+              </a>
+              <a class="course-card" href="#" data-view="lesson-assets" data-course="lesson-assets">
+                <span class="course-number">06</span>
+                <svg class="icon" aria-hidden="true"><use href="#icon-stock"></use></svg>
+                <div>
+                  <h3>国债、基金、股票、指数</h3>
+                  <p>先认识四类基础资产。</p>
+                </div>
+                <span class="course-status" data-status="lesson-assets">待学习</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="section-block reveal delay-3">
+            <div class="section-heading">
+              <div>
+                <p class="kicker">第二层 · 实战必修</p>
+                <h2>准备接触真实工具</h2>
+              </div>
+              <span class="section-hint">每课约 3 分钟</span>
+            </div>
+            <div class="course-grid">
+              <a class="course-card" href="#" data-view="lesson-short" data-course="lesson-short">
+                <span class="course-number">07</span>
+                <svg class="icon" aria-hidden="true"><use href="#icon-short"></use></svg>
+                <div><h3>做空是什么</h3><p>理解下跌也能赚钱。</p></div>
+                <span class="course-status" data-status="lesson-short">待学习</span>
+              </a>
+              <a class="course-card" href="#" data-view="lesson-quant" data-course="lesson-quant">
+                <span class="course-number">08</span>
+                <svg class="icon" aria-hidden="true"><use href="#icon-quant"></use></svg>
+                <div><h3>量化是什么</h3><p>把规则写成程序。</p></div>
+                <span class="course-status" data-status="lesson-quant">待学习</span>
+              </a>
+              <a class="course-card" href="#" data-view="lesson-fundamental" data-course="lesson-fundamental">
+                <span class="course-number">09</span>
+                <svg class="icon" aria-hidden="true"><use href="#icon-stock"></use></svg>
+                <div><h3>基本面体检</h3><p>看公司是否赚钱。</p></div>
+                <span class="course-status" data-status="lesson-fundamental">待学习</span>
+              </a>
+              <a class="course-card" href="#" data-view="lesson-technical" data-course="lesson-technical">
+                <span class="course-number">10</span>
+                <svg class="icon" aria-hidden="true"><use href="#icon-price"></use></svg>
+                <div><h3>技术面基础</h3><p>均线、成交量和趋势。</p></div>
+                <span class="course-status" data-status="lesson-technical">待学习</span>
+              </a>
+              <a class="course-card" href="#" data-view="lesson-rules" data-course="lesson-rules">
+                <span class="course-number">11</span>
+                <svg class="icon" aria-hidden="true"><use href="#icon-stock"></use></svg>
+                <div><h3>交易规则与费用</h3><p>下单前必须知道的事。</p></div>
+                <span class="course-status" data-status="lesson-rules">待学习</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="section-block reveal delay-4">
+            <div class="section-heading">
+              <div>
+                <p class="kicker">第三层 · 风险与落地</p>
+                <h2>真正保护自己</h2>
+              </div>
+              <span class="section-hint">每课约 3 分钟</span>
+            </div>
+            <div class="course-grid">
+              <a class="course-card" href="#" data-view="lesson-tools" data-course="lesson-tools">
+                <span class="course-number">12</span>
+                <svg class="icon" aria-hidden="true"><use href="#icon-stock"></use></svg>
+                <div><h3>分红、打新、可转债</h3><p>常见但容易误解的工具。</p></div>
+                <span class="course-status" data-status="lesson-tools">待学习</span>
+              </a>
+              <a class="course-card" href="#" data-view="lesson-risk" data-course="lesson-risk">
+                <span class="course-number">13</span>
+                <svg class="icon" aria-hidden="true"><use href="#icon-mind"></use></svg>
+                <div><h3>仓位、止损和分散</h3><p>决定你能在市场中活多久。</p></div>
+                <span class="course-status" data-status="lesson-risk">待学习</span>
+              </a>
+              <a class="course-card" href="#" data-view="lesson-scam" data-course="lesson-scam">
+                <span class="course-number">14</span>
+                <svg class="icon" aria-hidden="true"><use href="#icon-lock"></use></svg>
+                <div><h3>常见骗局避坑</h3><p>识别荐股群和保本高收益。</p></div>
+                <span class="course-status" data-status="lesson-scam">待学习</span>
+              </a>
+              <a class="course-card" href="#" data-view="lesson-mindset" data-course="lesson-mindset">
+                <span class="course-number">15</span>
+                <svg class="icon" aria-hidden="true"><use href="#icon-mind"></use></svg>
+                <div><h3>心态与第一笔交易</h3><p>把知识落地成行动。</p></div>
+                <span class="course-status" data-status="lesson-mindset">待学习</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="section-block reveal delay-5">
+            <div class="section-heading">
+              <div>
+                <p class="kicker">三本书的经典智慧</p>
+                <h2>让大师的一句话，帮你少走弯路</h2>
+              </div>
+              <span class="section-hint">简短引用 · 标注出处</span>
+            </div>
+            <div class="book-shelf">
+              <article class="book-card">
+                <span class="book-tag">《穷查理宝典》</span>
+                <blockquote>“反过来想，总是反过来想。”</blockquote>
+                <p>Invert, always invert.</p>
+              </article>
+              <article class="book-card">
+                <span class="book-tag">《滚雪球》</span>
+                <blockquote>“价格是你付出的，价值才是你得到的。”</blockquote>
+                <p>Price is what you pay. Value is what you get.</p>
+              </article>
+              <article class="book-card">
+                <span class="book-tag">《安全边际》</span>
+                <blockquote>“价值投资的第一原则，是给自己留出安全边际。”</blockquote>
+                <p>The first principle of value investing is the margin of safety.</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="view lesson" id="lesson-stock">
+          <div class="lesson-head reveal">
+            <p class="kicker">第 1 课 · 认识市场</p>
+            <h1>股票：买下公司的一小块</h1>
+            <p>买股票不是买一张彩票，而是成为一家公司的股东。你拥有公司的一小部分，也会分享它的盈利或承担它的风险。</p>
+          </div>
+
+          <div class="concept-row reveal delay-1">
+            <article class="concept-card">
+              <span class="concept-tag up">股份</span>
+              <h3>公司被切成很多份</h3>
+              <p>每一份都叫一股，买股票就是买下其中若干份。</p>
+            </article>
+            <article class="concept-card">
+              <span class="concept-tag neutral">股东</span>
+              <h3>你是公司的部分拥有者</h3>
+              <p>股东可能获得分红，也会承担股价波动。</p>
+            </article>
+            <article class="concept-card">
+              <span class="concept-tag down">上市</span>
+              <h3>公司把股票放到市场交易</h3>
+              <p>上市不等于这家公司一定值得买。</p>
+            </article>
+          </div>
+
+          <div class="panel reveal delay-2">
+            <div class="panel-head">
+              <div>
+                <p class="kicker">动手实验</p>
+                <h2>拖动滑块，看看你拥有多少公司</h2>
+              </div>
+              <span class="stat-pill" id="stockOwnership">拥有 1%</span>
+            </div>
+            <div class="share-experiment">
+              <div class="share-grid" id="shareGrid"></div>
+              <input id="stockShares" class="scrubber" type="range" min="1" max="100" value="1" />
+              <p class="chart-hint" id="stockShareHint">你拥有 1 份，占这家公司的 1%。</p>
+            </div>
+          </div>
+
+          <div class="story-box reveal delay-3">
+            <strong>一个小故事</strong>
+            <p>小王想开一家奶茶店，但钱不够。他把公司切成很多份，把其中一些股份卖给愿意出钱的人。大家出钱后，小王有钱开店了。后来这些股份可以在交易所转手买卖，这就是你平时看到的股票市场。</p>
+          </div>
+
+          <div class="story-steps reveal delay-3">
+            <article class="story-step">
+              <span class="story-step-num">1</span>
+              <h3>公司需要钱来干什么</h3>
+              <p>开店、研发、扩大生产，都需要钱。公司不想只靠借钱，于是选择把所有权切成很多小份。</p>
+            </article>
+            <div class="story-arrow">→</div>
+            <article class="story-step">
+              <span class="story-step-num">2</span>
+              <h3>发行股票</h3>
+              <p>公司把这些小份卖给愿意出钱的人。出钱的人拿到股份，公司拿到资金去经营。</p>
+            </article>
+            <div class="story-arrow">→</div>
+            <article class="story-step">
+              <span class="story-step-num">3</span>
+              <h3>二级市场</h3>
+              <p>拿到股份的人可以再到交易所转手给别人。以后的价格，由买卖双方决定。</p>
+            </article>
+          </div>
+
+          <div class="challenge reveal delay-4">
+            <div class="challenge-copy">
+              <p class="kicker">小挑战</p>
+              <h2>买股票等于什么？</h2>
+              <p>选择最准确的一项。</p>
+            </div>
+            <div class="challenge-actions">
+              <button class="secondary-button" type="button" data-stock-answer="owner">成为公司股东</button>
+              <button class="secondary-button" type="button" data-stock-answer="lender">借钱给公司</button>
+              <button class="secondary-button" type="button" data-stock-answer="product">购买公司产品</button>
+            </div>
+            <div class="challenge-feedback" id="stockChallengeFeedback">选一个答案试试。</div>
+          </div>
+
+          <div class="lesson-actions">
+            <button class="text-button" type="button" data-view="overview">返回课程地图</button>
+            <button class="primary-button" type="button" data-view="lesson-price">
+              下一课
+              <svg class="icon" aria-hidden="true"><use href="#icon-arrow"></use></svg>
+            </button>
+          </div>
+        </section>
+
+        <section class="view lesson" id="lesson-price">
+          <div class="lesson-head reveal">
+            <p class="kicker">第 2 课 · 价格形成</p>
+            <h1>价格为什么涨跌：人多还是货多</h1>
+            <p>股票价格不是随机数字，而是买卖双方不断成交出来的结果。想买的人多，价格容易涨；想卖的人多，价格容易跌。</p>
+          </div>
+
+          <div class="story-box reveal delay-1">
+            <strong>一个小故事</strong>
+            <p>你去菜市场买菜，今天很多人都想买同一家的菜，老板自然敢涨价；如果大家都不买，菜只能降价。股票也一样：想买的人多，价格就涨；想卖的人多，价格就跌。</p>
+          </div>
+
+          <div class="concept-row reveal delay-1">
+            <article class="concept-card">
+              <span class="concept-tag up">买方</span>
+              <h3>想买的人</h3>
+              <p>他们愿意出钱，带来向上的力量。</p>
+            </article>
+            <article class="concept-card">
+              <span class="concept-tag down">卖方</span>
+              <h3>想卖的人</h3>
+              <p>他们想把手里的股票换成现金。</p>
+            </article>
+            <article class="concept-card">
+              <span class="concept-tag neutral">供需</span>
+              <h3>两股力量相遇</h3>
+              <p>成交价格就是它们暂时平衡的地方。</p>
+            </article>
+          </div>
+
+          <div class="panel reveal delay-2">
+            <div class="panel-head">
+              <div>
+                <p class="kicker">动手实验</p>
+                <h2>点击按钮，观察价格被谁推动</h2>
+              </div>
+              <span class="stat-pill" id="priceValue">100.0</span>
+            </div>
+            <div class="liquid-tilt-card">
+              <div class="liquid-tilt-inner" id="liquidTiltInner">
+                <button class="liquid-side buyer" type="button" data-price="buy">
+                  <span class="liquid-wave" id="buyerLiquid"></span>
+                  <span class="liquid-label">更多买方</span>
+                  <span class="liquid-sub">点击让买方水更多</span>
+                </button>
+                <div class="liquid-divider"></div>
+                <button class="liquid-side seller" type="button" data-price="sell">
+                  <span class="liquid-wave" id="sellerLiquid"></span>
+                  <span class="liquid-label">更多卖方</span>
+                  <span class="liquid-sub">点击让卖方水更多</span>
+                </button>
+              </div>
+              <div class="liquid-readout" id="liquidReadout">买卖平衡</div>
+            </div>
+            <p class="chart-hint" id="priceStatus">买卖力量接近，价格暂时稳定。</p>
+          </div>
+
+          <div class="challenge reveal delay-3">
+            <div class="challenge-copy">
+              <p class="kicker">小挑战</p>
+              <h2>想买的人远多于想卖的人，价格通常会怎样？</h2>
+            </div>
+            <div class="challenge-actions">
+              <button class="secondary-button" type="button" data-price-answer="up">上涨</button>
+              <button class="secondary-button" type="button" data-price-answer="down">下跌</button>
+              <button class="secondary-button" type="button" data-price-answer="flat">不变</button>
+            </div>
+            <div class="challenge-feedback" id="priceChallengeFeedback">选一个答案试试。</div>
+          </div>
+
+          <div class="lesson-actions">
+            <button class="text-button" type="button" data-view="overview">返回课程地图</button>
+            <button class="primary-button" type="button" data-view="lesson-kline">
+              下一课
+              <svg class="icon" aria-hidden="true"><use href="#icon-arrow"></use></svg>
+            </button>
+          </div>
+        </section>
+
+        <section class="view lesson" id="lesson-kline">
+          <div class="lesson-head reveal">
+            <p class="kicker">第 3 课 · 市场直觉</p>
+            <h1>K线：一张图看懂价格情绪</h1>
+            <p>一根蜡烛记录一个时间段里的开、高、低、收。红色代表下跌，绿色代表上涨；实体和影线在告诉你买卖双方谁更主动。</p>
+          </div>
+
+          <div class="story-box reveal delay-1">
+            <strong>一个小故事</strong>
+            <p>把一根蜡烛想成一个人一天的活动：早上从家里出发是开盘，晚上回到家是收盘，中间去过的最高楼和最远地方就是最高价和最低价。绿色说明他最后回家时比出发时更精神，红色则相反。</p>
+          </div>
+
+          <div class="concept-row reveal delay-1">
+            <article class="concept-card">
+              <span class="concept-tag up">阳线</span>
+              <h3>收盘价高于开盘价</h3>
+              <p>买方更强，市场情绪偏乐观。</p>
+            </article>
+            <article class="concept-card">
+              <span class="concept-tag down">阴线</span>
+              <h3>收盘价低于开盘价</h3>
+              <p>卖方更强，市场情绪偏谨慎。</p>
+            </article>
+            <article class="concept-card">
+              <span class="concept-tag neutral">四个价格</span>
+              <h3>开、高、低、收</h3>
+              <p>影线代表价格曾经到过的地方。</p>
+            </article>
+          </div>
+
+          <div class="panel reveal delay-2">
+            <div class="panel-head">
+              <div>
+                <p class="kicker">动手实验</p>
+                <h2>点一点，切换市场情绪</h2>
+              </div>
+              <div class="segmented">
+                <button class="segment active" type="button" data-kline="bull">牛市</button>
+                <button class="segment" type="button" data-kline="range">震荡</button>
+                <button class="segment" type="button" data-kline="bear">熊市</button>
+              </div>
+            </div>
+            <div class="chart-wrap">
+              <svg id="klineChart" class="chart-svg" viewBox="0 0 720 320" role="img" aria-label="可交互蜡烛图"></svg>
+            </div>
+            <div class="chart-hint" id="klineInfo">点击任意一根 K 线查看开、高、低、收。</div>
+          </div>
+
+          <div class="anatomy-grid reveal delay-3">
+            <div class="panel anatomy-panel">
+              <p class="kicker">解剖台</p>
+              <h2>阳线长这样</h2>
+              <div class="anatomy-demo">
+                <div class="candle-demo">
+                  <span class="wick top"></span>
+                  <span class="body up"></span>
+                  <span class="wick bottom"></span>
+                </div>
+                <svg class="anatomy-arrows" viewBox="0 0 260 240" aria-hidden="true">
+                  <defs>
+                    <marker id="arrowA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+                      <path d="M0,0 L10,5 L0,10 Z" fill="#6a707c" stroke="#6a707c" stroke-width="1"></path>
+                    </marker>
+                  </defs>
+                  <path class="sketch-line" d="M44 18 C68 16 84 24 116 21" marker-end="url(#arrowA)"></path>
+                  <text class="sketch-label" x="12" y="17">最高价</text>
+                  <path class="sketch-line" d="M44 75 C68 74 84 78 116 75" marker-end="url(#arrowA)"></path>
+                  <text class="sketch-label" x="12" y="74">收盘价</text>
+                  <path class="sketch-line" d="M140 165 C164 163 178 167 194 165" marker-end="url(#arrowA)"></path>
+                  <text class="sketch-label" x="205" y="169">开盘价</text>
+                  <path class="sketch-line" d="M140 219 C164 217 178 221 194 219" marker-end="url(#arrowA)"></path>
+                  <text class="sketch-label" x="205" y="223">最低价</text>
+                </svg>
+              </div>
+              <div class="anatomy-labels">
+                <span>最高价</span>
+                <span>收盘价</span>
+                <span>开盘价</span>
+                <span>最低价</span>
+              </div>
+            </div>
+            <div class="panel anatomy-panel">
+              <p class="kicker">解剖台</p>
+              <h2>阴线长这样</h2>
+              <div class="anatomy-demo">
+                <div class="candle-demo">
+                  <span class="wick top"></span>
+                  <span class="body down"></span>
+                  <span class="wick bottom"></span>
+                </div>
+                <svg class="anatomy-arrows" viewBox="0 0 260 240" aria-hidden="true">
+                  <defs>
+                    <marker id="arrowB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+                      <path d="M0,0 L10,5 L0,10 Z" fill="#6a707c" stroke="#6a707c" stroke-width="1"></path>
+                    </marker>
+                  </defs>
+                  <path class="sketch-line" d="M44 18 C68 16 84 24 116 21" marker-end="url(#arrowB)"></path>
+                  <text class="sketch-label" x="12" y="17">最高价</text>
+                  <path class="sketch-line" d="M44 75 C68 74 84 78 116 75" marker-end="url(#arrowB)"></path>
+                  <text class="sketch-label" x="12" y="74">开盘价</text>
+                  <path class="sketch-line" d="M140 165 C164 163 178 167 194 165" marker-end="url(#arrowB)"></path>
+                  <text class="sketch-label" x="205" y="169">收盘价</text>
+                  <path class="sketch-line" d="M140 219 C164 217 178 221 194 219" marker-end="url(#arrowB)"></path>
+                  <text class="sketch-label" x="205" y="223">最低价</text>
+                </svg>
+              </div>
+              <div class="anatomy-labels">
+                <span>最高价</span>
+                <span>开盘价</span>
+                <span>收盘价</span>
+                <span>最低价</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="challenge reveal delay-4">
+            <div class="challenge-copy">
+              <p class="kicker">小挑战</p>
+              <h2>下面这根是阳线还是阴线？</h2>
+              <p>看收盘价和开盘价谁更高。</p>
+            </div>
+            <div class="challenge-candle">
+              <span class="wick top"></span>
+              <span class="body up"></span>
+              <span class="wick bottom"></span>
+            </div>
+            <div class="challenge-actions">
+              <button class="secondary-button" type="button" data-kline-answer="up">阳线</button>
+              <button class="secondary-button" type="button" data-kline-answer="down">阴线</button>
+            </div>
+            <div class="challenge-feedback" id="klineChallengeFeedback">选一个答案试试。</div>
+          </div>
+
+          <div class="lesson-actions">
+            <button class="text-button" type="button" data-view="overview">返回课程地图</button>
+            <button class="primary-button" type="button" data-view="lesson-index">
+              下一课
+              <svg class="icon" aria-hidden="true"><use href="#icon-arrow"></use></svg>
+            </button>
+          </div>
+        </section>
+
+        <section class="view lesson" id="lesson-index">
+          <div class="lesson-head reveal">
+            <p class="kicker">第 4 课 · 组合工具</p>
+            <h1>指数和 ETF：把很多股票装进一个篮子</h1>
+            <p>指数不是一家公司，而是一篮子股票的平均表现。ETF 则让你可以像买股票一样，买下这个篮子。</p>
+          </div>
+
+          <div class="story-box reveal delay-1">
+            <strong>一个小故事</strong>
+            <p>指数就像一篮子水果的平均价格。如果只看一个苹果，它可能一会儿贵一会儿便宜；但把苹果、香蕉、橙子装在一起，整体价格就会平稳很多。</p>
+          </div>
+
+          <div class="concept-row reveal delay-1">
+            <article class="concept-card">
+              <span class="concept-tag neutral">指数</span>
+              <h3>一篮子股票的平均表现</h3>
+              <p>比如沪深300、标普500，反映整体走势。</p>
+            </article>
+            <article class="concept-card">
+              <span class="concept-tag up">ETF</span>
+              <h3>可以交易的基金</h3>
+              <p>像股票一样买卖，却包含很多资产。</p>
+            </article>
+            <article class="concept-card">
+              <span class="concept-tag down">分散</span>
+              <h3>别把鸡蛋放一个篮子</h3>
+              <p>分散能降低单只股票暴雷的影响。</p>
+            </article>
+          </div>
+
+          <div class="panel reveal delay-2">
+            <div class="panel-head">
+              <div>
+                <p class="kicker">动手实验</p>
+                <h2>拖动三只股票价格，看指数变化</h2>
+              </div>
+              <span class="stat-pill" id="indexValue">指数 100</span>
+            </div>
+            <div class="index-basket">
+              <div class="stock-slider-card">
+                <label for="stockA">公司 A <span id="stockAValue">100</span></label>
+                <input id="stockA" class="scrubber" type="range" min="20" max="200" value="100" />
+              </div>
+              <div class="stock-slider-card">
+                <label for="stockB">公司 B <span id="stockBValue">100</span></label>
+                <input id="stockB" class="scrubber" type="range" min="20" max="200" value="100" />
+              </div>
+              <div class="stock-slider-card">
+                <label for="stockC">公司 C <span id="stockCValue">100</span></label>
+                <input id="stockC" class="scrubber" type="range" min="20" max="200" value="100" />
+              </div>
+            </div>
+            <p class="chart-hint" id="indexHint">指数取三只股票的平均价格，所以单只股票的暴涨暴跌会被平滑一些。</p>
+          </div>
+
+          <div class="challenge reveal delay-3">
+            <div class="challenge-copy">
+              <p class="kicker">小挑战</p>
+              <h2>“指数”最像下面哪个概念？</h2>
+            </div>
+            <div class="challenge-actions">
+              <button class="secondary-button" type="button" data-index-answer="basket">一篮子股票</button>
+              <button class="secondary-button" type="button" data-index-answer="single">一只股票</button>
+              <button class="secondary-button" type="button" data-index-answer="bond">一张债券</button>
+            </div>
+            <div class="challenge-feedback" id="indexChallengeFeedback">选一个答案试试。</div>
+          </div>
+
+          <div class="lesson-actions">
+            <button class="text-button" type="button" data-view="overview">返回课程地图</button>
+            <button class="primary-button" type="button" data-view="lesson-cycle">
+              下一课
+              <svg class="icon" aria-hidden="true"><use href="#icon-arrow"></use></svg>
+            </button>
+          </div>
+        </section>
+
+        <section class="view lesson" id="lesson-cycle">
+          <div class="lesson-head reveal">
+            <p class="kicker">第 5 课 · 市场周期</p>
+            <h1>牛市与熊市：市场也会呼吸</h1>
+            <p>牛市不是一直涨，熊市也不是世界末日。它们只是市场在贪婪和恐惧之间的周期，会反复出现。</p>
+          </div>
+
+          <div class="story-box reveal delay-1">
+            <strong>一个小故事</strong>
+            <p>市场像四季。牛市像夏天，大家都热情高涨；熊市像冬天，气氛冷清。冬天难熬，但不会永远持续，春天和夏天还会再来。</p>
+          </div>
+
+          <div class="panel reveal delay-1">
+            <div class="panel-head">
+              <div>
+                <p class="kicker">周期地图</p>
+                <h2>拖动时间，看市场如何切换</h2>
+              </div>
+              <span class="phase-pill" id="cyclePhase">牛市</span>
+            </div>
+            <div class="chart-wrap">
+              <svg id="cycleChart" class="chart-svg" viewBox="0 0 720 300" role="img" aria-label="牛熊周期图"></svg>
+            </div>
+            <input id="cycleScrub" class="scrubber" type="range" min="0" max="100" value="50" />
+            <div class="cycle-readout">
+              <p id="cyclePhaseText">市场正在向上，情绪偏乐观。</p>
+            </div>
+          </div>
+
+          <div class="panel reveal delay-2">
+            <div class="panel-head">
+              <div>
+                <p class="kicker">情绪温度计</p>
+                <h2>你在市场里常是什么温度？</h2>
+              </div>
+            </div>
+            <div class="emotion-scale">
+              <span>极度恐惧</span>
+              <span class="emotion-track">
+                <span class="emotion-fill" id="emotionFill"></span>
+              </span>
+              <span>极度贪婪</span>
+            </div>
+            <input id="emotionSlider" class="scrubber" type="range" min="0" max="100" value="50" />
+            <p class="emotion-copy" id="emotionText">保持中性，既不恐慌也不追高，是更稳的状态。</p>
+          </div>
+
+          <div class="challenge reveal delay-3">
+            <div class="challenge-copy">
+              <p class="kicker">小挑战</p>
+              <h2>看描述，判断市场阶段</h2>
+              <p id="cycleScenarioText">指数连续数月上涨，人人都在讨论股票，开户人数激增。</p>
+            </div>
+            <div class="challenge-actions">
+              <button class="secondary-button" type="button" data-cycle-answer="bull">牛市</button>
+              <button class="secondary-button" type="button" data-cycle-answer="bear">熊市</button>
+              <button class="secondary-button" type="button" data-cycle-answer="range">震荡</button>
+            </div>
+            <div class="challenge-feedback" id="cycleScenarioFeedback">选一个答案试试。</div>
+          </div>
+
+          <div class="lesson-actions">
+            <button class="text-button" type="button" data-view="overview">返回课程地图</button>
+            <button class="primary-button" type="button" data-view="lesson-assets">
+              去测验
+              <svg class="icon" aria-hidden="true"><use href="#icon-arrow"></use></svg>
+            </button>
+          </div>
+        </section>
+
+        <section class="view lesson" id="lesson-assets">
+          <div class="lesson-head reveal">
+            <p class="kicker">第 6 课 · 基础资产</p>
+            <h1>国债、基金、股票、指数：先认识四类资产</h1>
+            <p>把钱放在不同地方，风险和收益也不同。先分清四类基础资产，再决定自己适合哪一种。</p>
+          </div>
+
+          <div class="story-box reveal delay-1">
+            <strong>一个小故事</strong>
+            <p>国债像把钱存进定期存款；基金像请人帮你搭配一桌菜；股票像自己开一家小店；指数像看整条街的平均生意。选择不同，感受也不同。</p>
+          </div>
+
+          <div class="concept-row reveal delay-1">
+            <article class="concept-card"><span class="concept-tag neutral">国债</span><h3>国家向你借钱</h3><p>风险较低，收益通常也比较低。</p></article>
+            <article class="concept-card"><span class="concept-tag neutral">基金</span><h3>把钱交给专业人士</h3><p>一篮子资产，风险和收益看组合。</p></article>
+            <article class="concept-card"><span class="concept-tag down">股票</span><h3>买一家公司的股份</h3><p>收益可能更高，波动也更大。</p></article>
+            <article class="concept-card"><span class="concept-tag up">指数</span><h3>很多股票的平均表现</h3><p>比单只股票更分散。</p></article>
+          </div>
+
+          <div class="panel reveal delay-2">
+            <div class="panel-head">
+              <div><p class="kicker">动手实验</p><h2>点一点，看四类资产的风险和收益</h2></div>
+              <span class="stat-pill" id="assetRisk">风险 --</span>
+            </div>
+            <div class="segmented strategy-switch">
+              <button class="segment active" type="button" data-asset="bond">国债</button>
+              <button class="segment" type="button" data-asset="fund">基金</button>
+              <button class="segment" type="button" data-asset="stock">股票</button>
+              <button class="segment" type="button" data-asset="index">指数</button>
+            </div>
+            <div class="asset-result">
+              <strong id="assetName">国债</strong>
+              <p id="assetDesc">国债是国家发行的借条，通常被认为风险较低，但收益也相对有限。</p>
+            </div>
+          </div>
+
+          <div class="challenge reveal delay-3">
+            <div class="challenge-copy">
+              <p class="kicker">小挑战</p>
+              <h2>通常来说，下面哪类资产的风险最高？</h2>
+            </div>
+            <div class="challenge-actions">
+              <button class="secondary-button" type="button" data-asset-answer="bond">国债</button>
+              <button class="secondary-button" type="button" data-asset-answer="fund">基金</button>
+              <button class="secondary-button" type="button" data-asset-answer="stock">单只股票</button>
+              <button class="secondary-button" type="button" data-asset-answer="index">指数</button>
+            </div>
+            <div class="challenge-feedback" id="assetFeedback">选一个答案试试。</div>
+          </div>
+
+          <div class="lesson-actions">
+            <button class="text-button" type="button" data-view="overview">返回课程地图</button>
+            <button class="primary-button" type="button" data-view="quiz">去测验 <svg class="icon" aria-hidden="true"><use href="#icon-arrow"></use></svg></button>
+          </div>
+        </section>
+
+        <section class="view lesson" id="lesson-short">
+          <div class="lesson-head reveal">
+            <p class="kicker">第 7 课 · 交易方向</p>
+            <h1>做空：先借后卖，再买回来还</h1>
+            <p>做多从“先买后卖”赚钱；做空反过来，先借来卖掉，等价格跌了再买回来还，赚中间的差价。</p>
+          </div>
+
+          <div class="story-box reveal delay-1">
+            <strong>一个小故事</strong>
+            <p>你借了朋友一张很抢手的游戏卡，现在市价 100 元。你先把它卖掉，拿到 100 元；过几天这张卡跌到 70 元，你再花 70 元买回来还给朋友。你手里多出了 30 元。这就是“做空”：先借、再卖、跌了买回来还。</p>
+          </div>
+
+          <div class="compare-grid reveal delay-1">
+            <article class="compare-card long">
+              <span class="compare-badge">做多</span>
+              <h3>先买，后卖</h3>
+              <p>10 元买入，15 元卖出，赚 5 元。股价涨得越高，赚得越多。</p>
+            </article>
+            <article class="compare-card short">
+              <span class="compare-badge">做空</span>
+              <h3>先卖，后买</h3>
+              <p>借 1 股按 100 元卖出，跌到 70 元买回来还，赚 30 元。</p>
+            </article>
+          </div>
+
+          <div class="panel reveal delay-2">
+            <div class="panel-head">
+              <div>
+                <p class="kicker">动手实验</p>
+                <h2>拖动回补价格，看盈亏变化</h2>
+              </div>
+              <span class="stat-pill">卖出价：100 元</span>
+            </div>
+            <div class="short-lab">
+              <div class="short-gauge">
+                <svg viewBox="0 0 180 340" role="img" aria-label="做空盈亏示意图">
+                  <rect class="gauge-profit" x="40" y="170" width="100" height="150" rx="8"></rect>
+                  <rect class="gauge-loss" x="40" y="20" width="100" height="150" rx="8"></rect>
+                  <line x1="30" y1="170" x2="150" y2="170"></line>
+                  <line id="shortMarker" x1="20" y1="245" x2="160" y2="245"></line>
+                </svg>
+              </div>
+              <div class="short-controls">
+                <label for="shortBuyback">回补价格</label>
+                <input id="shortBuyback" type="range" min="40" max="160" value="70" />
+                <div class="short-value">当前回补价 <strong id="shortBuybackValue">70 元</strong></div>
+                <div class="short-result positive">
+                  <span>每股盈亏</span>
+                  <strong id="shortProfit">+30 元</strong>
+                  <p id="shortStatus">价格低于卖出价，你赚了。</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="book-quote reveal delay-3">
+            <p>“第一条规则：不要亏钱。第二条规则：不要忘记第一条规则。”</p>
+            <span>Rule No.1: Never lose money. Rule No.2: Never forget rule No.1. —《滚雪球》</span>
+          </div>
+
+          <div class="lesson-actions">
+            <button class="text-button" type="button" data-view="overview">返回课程地图</button>
+            <button class="primary-button" type="button" data-view="lesson-quant">下一课 <svg class="icon" aria-hidden="true"><use href="#icon-arrow"></use></svg></button>
+          </div>
+        </section>
+
+        <section class="view lesson" id="lesson-quant">
+          <div class="lesson-head reveal">
+            <p class="kicker">第 8 课 · 交易工具</p>
+            <h1>量化：把规则写成程序</h1>
+            <p>量化不是神秘黑箱。它只是把“什么时候买、什么时候卖”写清楚，再用历史数据回测，最后交给程序自动执行。</p>
+          </div>
+
+          <div class="story-box reveal delay-1">
+            <strong>一个小故事</strong>
+            <p>你请机器人帮你做饭，但必须先写清楚菜谱：什么时候放油、什么时候放菜、什么时候关火。机器人不会自己发挥，只会严格照做。量化就是给电脑写一份“买卖菜谱”，让它按规则自动操作。</p>
+          </div>
+
+          <div class="flow-row reveal delay-1">
+            <div class="flow-step"><span>1</span><strong>收集数据</strong><small>价格、成交量等</small></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step"><span>2</span><strong>写下规则</strong><small>买什么、何时买</small></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step"><span>3</span><strong>历史回测</strong><small>看过去表现</small></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step"><span>4</span><strong>自动执行</strong><small>程序按规则下单</small></div>
+          </div>
+
+          <div class="panel reveal delay-2">
+            <div class="panel-head">
+              <div>
+                <p class="kicker">动手实验</p>
+                <h2>选一个策略，跑十年模拟</h2>
+              </div>
+              <button class="secondary-button" id="quantRegenerate" type="button">
+                <svg class="icon" aria-hidden="true"><use href="#icon-reset"></use></svg>
+                重新回测
+              </button>
+            </div>
+            <div class="segmented strategy-switch">
+              <button class="segment active" type="button" data-strategy="dca">每月定投</button>
+              <button class="segment" type="button" data-strategy="momentum">追涨杀跌</button>
+              <button class="segment" type="button" data-strategy="ma">简单均线</button>
+            </div>
+            <div class="chart-wrap">
+              <svg id="quantChart" class="chart-svg" viewBox="0 0 720 320" role="img" aria-label="量化回测曲线"></svg>
+            </div>
+            <div class="stats-grid">
+              <div class="stat"><span>最终资产</span><strong id="quantFinal">--</strong></div>
+              <div class="stat"><span>累计投入</span><strong id="quantInvested">--</strong></div>
+              <div class="stat"><span>总收益</span><strong id="quantReturn">--</strong></div>
+              <div class="stat"><span>最大回撤</span><strong id="quantDrawdown">--</strong></div>
+            </div>
+          </div>
+
+          <div class="book-quote reveal delay-3">
+            <p>“把一个简单的想法认真对待。”</p>
+            <span>Take a simple idea and take it seriously. —《穷查理宝典》</span>
+          </div>
+
+          <div class="lesson-actions">
+            <button class="text-button" type="button" data-view="overview">返回课程地图</button>
+            <button class="primary-button" type="button" data-view="lesson-fundamental">下一课 <svg class="icon" aria-hidden="true"><use href="#icon-arrow"></use></svg></button>
+          </div>
+        </section>
+
+        <section class="view lesson" id="lesson-fundamental">
+          <div class="lesson-head reveal">
+            <p class="kicker">第 9 课 · 公司分析</p>
+            <h1>基本面体检：公司到底赚不赚钱</h1>
+            <p>技术面看价格，基本面看公司。收入、利润和估值，是判断一家公司是否健康的三个基本指标。</p>
+          </div>
+
+          <div class="story-box reveal delay-1">
+            <strong>一个小故事</strong>
+            <p>你想买下街角那家奶茶店，不能只看它门面漂亮。要问它一个月卖多少杯、去掉房租和人工还剩多少钱，以及老板开价合不合理。看公司也一样：先看收入，再看利润，最后看价格划不划算。</p>
+          </div>
+
+          <div class="concept-row reveal delay-1">
+            <article class="concept-card"><span class="concept-tag up">收入</span><h3>公司卖了多少</h3><p>收入高不代表一定赚钱。</p></article>
+            <article class="concept-card"><span class="concept-tag neutral">利润</span><h3>真正剩下多少</h3><p>扣除成本后的钱才是利润。</p></article>
+            <article class="concept-card"><span class="concept-tag down">估值</span><h3>你付出的价格</h3><p>再好的公司买贵了也可能亏。</p></article>
+          </div>
+
+          <div class="panel reveal delay-2">
+            <div class="panel-head">
+              <div><p class="kicker">动手实验</p><h2>算一算多少年能回本</h2></div>
+              <span class="stat-pill" id="fundPE">约 20 年回本</span>
+            </div>
+            <div class="calculator-grid">
+              <div>
+                <label for="fundEps">每股收益 EPS（元）</label>
+                <input id="fundEps" class="number-input" type="number" value="5" min="0.1" step="0.1" />
+              </div>
+              <div>
+                <label for="fundPrice">当前股价（元）</label>
+                <input id="fundPrice" class="number-input" type="number" value="100" min="1" step="1" />
+              </div>
+            </div>
+            <p class="chart-hint" id="fundPEHint">如果公司每年每股赚 5 元，股价 100 元，那么大约需要 20 年把你付的钱赚回来。</p>
+          </div>
+
+          <div class="book-quote reveal delay-3">
+            <p>“价格是你付出的，价值才是你得到的。”</p>
+            <span>Price is what you pay. Value is what you get. —《滚雪球》</span>
+          </div>
+
+          <div class="lesson-actions">
+            <button class="text-button" type="button" data-view="overview">返回课程地图</button>
+            <button class="primary-button" type="button" data-view="lesson-technical">下一课 <svg class="icon" aria-hidden="true"><use href="#icon-arrow"></use></svg></button>
+          </div>
+        </section>
+
+        <section class="view lesson" id="lesson-technical">
+          <div class="lesson-head reveal">
+            <p class="kicker">第 10 课 · 图表语言</p>
+            <h1>技术面基础：从价格里找趋势</h1>
+            <p>技术面不预测公司价值，只观察价格、成交量和趋势。均线能帮你看清价格是在向上、向下还是横盘。</p>
+          </div>
+
+          <div class="story-box reveal delay-1">
+            <strong>一个小故事</strong>
+            <p>你看天气预报，不是去研究云是怎么形成的，而是判断明天要不要带伞。技术面也一样：不看公司内部，只看价格图、成交量和均线，判断现在更像晴天、下雨，还是阴天。</p>
+          </div>
+
+          <div class="risk-card reveal delay-1">
+            <h3>技术面只是辅助，不是买卖按钮</h3>
+            <p>看 K 线是帮你感受市场情绪，但真正决定买卖前，还要结合公司基本面、自己的风险承受能力和计划。不要只因为一根 K 线就冲动交易。</p>
+          </div>
+
+          <div class="concept-row reveal delay-1">
+            <article class="concept-card"><span class="concept-tag neutral">均线</span><h3>一段时间的平均成本</h3><p>把波动抹平，看清大方向。</p></article>
+            <article class="concept-card"><span class="concept-tag up">成交量</span><h3>有多少人在买卖</h3><p>人越多，价格变化越有分量。</p></article>
+            <article class="concept-card"><span class="concept-tag down">支撑与阻力</span><h3>地板和天花板</h3><p>价格容易在这里被挡住。</p></article>
+          </div>
+
+          <div class="panel reveal delay-2">
+            <div class="panel-head">
+              <div><p class="kicker">动手实验</p><h2>点一点，看三种趋势长什么样</h2></div>
+              <span class="stat-pill" id="technicalReadout">上涨趋势</span>
+            </div>
+            <div class="segmented strategy-switch">
+              <button class="segment active" type="button" data-trend="up">上涨</button>
+              <button class="segment" type="button" data-trend="down">下跌</button>
+              <button class="segment" type="button" data-trend="side">横盘</button>
+            </div>
+            <div class="chart-wrap">
+              <svg id="technicalChart" class="chart-svg" viewBox="0 0 720 300" role="img" aria-label="趋势示意图形"></svg>
+            </div>
+            <p class="chart-hint" id="technicalHint">上涨像上坡：价格整体越来越高。</p>
+          </div>
+
+          <div class="book-quote reveal delay-3">
+            <p>“反过来想，总是反过来想。”</p>
+            <span>Invert, always invert. —《穷查理宝典》</span>
+          </div>
+
+          <div class="lesson-actions">
+            <button class="text-button" type="button" data-view="overview">返回课程地图</button>
+            <button class="primary-button" type="button" data-view="lesson-rules">下一课 <svg class="icon" aria-hidden="true"><use href="#icon-arrow"></use></svg></button>
+          </div>
+        </section>
+
+        <section class="view lesson" id="lesson-rules">
+          <div class="lesson-head reveal">
+            <p class="kicker">第 11 课 · 交易落地</p>
+            <h1>交易规则与费用：下单前必须知道</h1>
+            <p>A股有 T+1、涨跌停和手续费等规则。搞清楚这些，才不会把辛苦赚的钱不明不白地交出去。</p>
+          </div>
+
+          <div class="story-box reveal delay-1">
+            <strong>一个小故事</strong>
+            <p>你去游乐场玩，先要读清楚几点开门、几点关门、能不能退票，以及买票有没有手续费。股市也有类似的“游戏规则”：今天买明天才能卖，价格涨跌有上限，买卖还要交手续费。</p>
+          </div>
+
+          <div class="concept-row reveal delay-1">
+            <article class="concept-card"><span class="concept-tag neutral">T+1</span><h3>今天买，明天才能卖</h3><p>A股股票采用 T+1 交易制度。</p></article>
+            <article class="concept-card"><span class="concept-tag down">涨跌停</span><h3>价格不是无限波动</h3><p>主板通常有 10% 涨跌限制。</p></article>
+            <article class="concept-card"><span class="concept-tag up">费用</span><h3>佣金和印花税</h3><p>买卖都会产生成本。</p></article>
+          </div>
+
+          <div class="panel reveal delay-2">
+            <div class="panel-head">
+              <div><p class="kicker">规则明细</p><h2>下单前，先记住这五件事</h2></div>
+            </div>
+            <div class="rule-list">
+              <div class="rule-item"><strong>T+1：今天买，明天才能卖</strong><p>A股股票通常当天买入后，最早要等下一个交易日才能卖出。不是所有品种都一样，交易前先确认。</p></div>
+              <div class="rule-item"><strong>涨跌停：价格有上限和下限</strong><p>主板一般涨跌不超过 10%，创业板、科创板可能是 20%，新股首日规则也不一样。具体以最新规则为准。</p></div>
+              <div class="rule-item"><strong>交易时间：工作日才开门</strong><p>A股通常是工作日上午 9:30-11:30，下午 13:00-15:00。节假日不开市。</p></div>
+              <div class="rule-item"><strong>最小买入单位：1手=100股</strong><p>买入通常要按 100 股的整数倍，也就是“一手”；卖出时可以把不足 100 股的零股一起卖掉。</p></div>
+              <div class="rule-item"><strong>手续费：佣金和印花税</strong><p>佣金由券商收取，买卖都可能收；印花税通常在卖出时收取。具体比例以券商和最新政策为准。</p></div>
+            </div>
+          </div>
+
+          <div class="panel reveal delay-3">
+            <div class="panel-head">
+              <div><p class="kicker">动手实验</p><h2>算一笔交易的真实成本</h2></div>
+              <span class="stat-pill" id="tradeTotal">总成本 --</span>
+            </div>
+            <div class="calculator-grid">
+              <div>
+                <label for="tradeAmount">成交金额（元）</label>
+                <input id="tradeAmount" class="number-input" type="number" value="10000" min="100" step="100" />
+              </div>
+              <div>
+                <label for="tradeFeeRate">佣金率（%）</label>
+                <input id="tradeFeeRate" class="number-input" type="number" value="0.03" min="0" step="0.01" />
+              </div>
+            </div>
+            <p class="chart-hint" id="tradeFee">手续费约 3 元，加上印花税等，成本会被放大。</p>
+          </div>
+
+          <div class="book-quote reveal delay-4">
+            <p>“价值投资的第一原则，是安全边际。”</p>
+            <span>The first principle of value investing is the margin of safety. —《安全边际》</span>
+          </div>
+
+          <div class="lesson-actions">
+            <button class="text-button" type="button" data-view="overview">返回课程地图</button>
+            <button class="primary-button" type="button" data-view="lesson-tools">下一课 <svg class="icon" aria-hidden="true"><use href="#icon-arrow"></use></svg></button>
+          </div>
+        </section>
+
+        <section class="view lesson" id="lesson-tools">
+          <div class="lesson-head reveal">
+            <p class="kicker">第 12 课 · 工具辨析</p>
+            <h1>分红、打新、可转债：别被名字骗了</h1>
+            <p>分红不是白拿钱，打新可能破发，可转债也不是保本产品。理解它们的真实规则，才能避免踩坑。</p>
+          </div>
+
+          <div class="story-box reveal delay-1">
+            <strong>一个小故事</strong>
+            <p>分红像把你左口袋的钱放到右口袋；打新像抽一张可能涨价也可能跌价的兑换券；可转债像一张能变成股票的借条。名字听起来都很好，但要先明白它们到底是怎么运作的。</p>
+          </div>
+
+          <div class="concept-row reveal delay-1">
+            <article class="concept-card"><span class="concept-tag neutral">分红</span><h3>除息后股价会调整</h3><p>分红通常不是凭空多出来的钱。</p></article>
+            <article class="concept-card"><span class="concept-tag down">打新</span><h3>可能中签，也可能破发</h3><p>新股并不保证上涨。</p></article>
+            <article class="concept-card"><span class="concept-tag up">可转债</span><h3>一张能变成股票的借条</h3><p>先借钱给公司，以后可以选择换成股票。</p></article>
+          </div>
+
+          <div class="panel reveal delay-2">
+            <div class="panel-head">
+              <div><p class="kicker">动手实验</p><h2>分红后，股价会怎么调整</h2></div>
+              <span class="stat-pill" id="dividendNote">分红 0 元</span>
+            </div>
+            <label for="dividendAmount">每股分红（元）</label>
+            <input id="dividendAmount" class="scrubber" type="range" min="0" max="10" value="2" />
+            <p class="chart-hint" id="dividendHint">如果股价 20 元，每股分红 2 元，除息后参考价会向下调整约 2 元。</p>
+          </div>
+
+          <div class="panel reveal delay-3">
+            <div class="panel-head">
+              <div><p class="kicker">动手实验</p><h2>打新：中签也可能破发</h2></div>
+              <button class="secondary-button" id="ipoDraw" type="button">模拟打新</button>
+            </div>
+            <p class="tool-copy">打新不是买到必赚。新股上市首日可能上涨，也可能跌破发行价，注册制下破发并不罕见。</p>
+            <div class="tool-result" id="ipoResult">点击按钮，模拟一次打新结果。</div>
+          </div>
+
+          <div class="panel reveal delay-4">
+            <div class="panel-head">
+              <div><p class="kicker">动手实验</p><h2>可转债：换成股票，还是继续当借条？</h2></div>
+              <span class="stat-pill" id="convertibleNote">换成股票：约 120 元</span>
+            </div>
+            <label for="convertStock">公司股票价格 <span id="convertStockValue">12 元</span></label>
+            <input id="convertStock" class="scrubber" type="range" min="5" max="30" value="12" />
+            <div class="tool-result" id="convertibleResult">股票涨了，换成股票更划算。</div>
+            <p class="chart-hint" id="convertibleHint">把可转债想成一张兑换券：公司答应你，以后可以用 10 元换 1 股，一共能换 10 股。股票越贵，兑换券越值钱；股票便宜时，继续当借条更稳。</p>
+          </div>
+
+          <div class="book-quote reveal delay-3">
+            <p>“风险并不内在于投资，它相对于你付出的价格。”</p>
+            <span>Risk is not inherent in an investment; it is relative to the price paid. —《安全边际》</span>
+          </div>
+
+          <div class="lesson-actions">
+            <button class="text-button" type="button" data-view="overview">返回课程地图</button>
+            <button class="primary-button" type="button" data-view="lesson-risk">下一课 <svg class="icon" aria-hidden="true"><use href="#icon-arrow"></use></svg></button>
+          </div>
+        </section>
+
+        <section class="view lesson" id="lesson-risk">
+          <div class="lesson-head reveal">
+            <p class="kicker">第 13 课 · 风险控制</p>
+            <h1>仓位、止损和分散：先活下来</h1>
+            <p>投资第一目标不是赚最多，而是避免永久亏损。仓位、止损和分散，是保护本金的三道门。</p>
+          </div>
+
+          <div class="story-box reveal delay-1">
+            <strong>一个小故事</strong>
+            <p>开车上路，你会系安全带、控制车速，也会给自己买保险。投资也一样：仓位就是控制车速，止损就是踩刹车，分散就是不要把全部家当都放在一个后备箱里。</p>
+          </div>
+
+          <div class="panel reveal delay-1">
+            <div class="panel-head">
+              <div><p class="kicker">风险原则</p><h2>先记住五条保命原则</h2></div>
+            </div>
+            <div class="rule-list">
+              <div class="rule-item"><strong>仓位：不要一次全押</strong><p>控制单只股票占你总投资的比例。比如只拿可承受资金的一部分买入，给自己留出余地。具体比例因人而异，别把急用钱投进去。</p></div>
+              <div class="rule-item"><strong>止损：提前想好退路</strong><p>买入前就写清楚：如果跌到多少，我就退出。这样真跌了，你会按计划行动，而不是情绪化死扛。</p></div>
+              <div class="rule-item"><strong>分散：别把鸡蛋放一个篮子</strong><p>不同行业、不同类型的资产搭配起来，能降低某一家公司突然暴雷带来的冲击。</p></div>
+              <div class="rule-item"><strong>用闲钱：不影响生活</strong><p>生活费、学费、应急钱不要拿来炒股。只有用短期不用的钱，你才能在波动中保持冷静。</p></div>
+              <div class="rule-item"><strong>不要借钱加杠杆</strong><p>借钱投资会同时放大收益和亏损。一旦市场下跌，可能亏掉的不只是本金，还会影响你的生活。</p></div>
+            </div>
+          </div>
+
+          <div class="panel reveal delay-3">
+            <div class="panel-head">
+              <div><p class="kicker">动手实验</p><h2>算一算最大可能亏损</h2></div>
+              <span class="stat-pill" id="riskMaxLoss">最大亏损 --</span>
+            </div>
+            <div class="calculator-grid">
+              <div>
+                <label for="riskCapital">本金（元）</label>
+                <input id="riskCapital" class="number-input" type="number" value="100000" min="1000" step="1000" />
+              </div>
+              <div>
+                <label for="riskPosition">仓位比例（%）</label>
+                <input id="riskPosition" class="number-input" type="number" value="30" min="1" max="100" step="1" />
+              </div>
+            </div>
+            <label for="riskStop">止损跌幅 <span id="riskStopValue">10%</span></label>
+            <input id="riskStop" class="scrubber" type="range" min="1" max="50" value="10" />
+            <p class="chart-hint" id="riskHint">这笔交易如果触发止损，你会损失约 3,000 元。</p>
+          </div>
+
+          <div class="book-quote reveal delay-4">
+            <p>“股市是把钱从没有耐心的人转移到有耐心的人身上的工具。”</p>
+            <span>The stock market is a device for transferring money from the impatient to the patient. —《滚雪球》</span>
+          </div>
+
+          <div class="lesson-actions">
+            <button class="text-button" type="button" data-view="overview">返回课程地图</button>
+            <button class="primary-button" type="button" data-view="lesson-scam">下一课 <svg class="icon" aria-hidden="true"><use href="#icon-arrow"></use></svg></button>
+          </div>
+        </section>
+
+        <section class="view lesson" id="lesson-scam">
+          <div class="lesson-head reveal">
+            <p class="kicker">第 14 课 · 防骗指南</p>
+            <h1>常见骗局避坑：不贪就不容易上当</h1>
+            <p>荐股群、内幕消息、保本高收益，很多骗局都利用人对“快速赚钱”的渴望。</p>
+          </div>
+
+          <div class="story-box reveal delay-1">
+            <strong>一个小故事</strong>
+            <p>如果有人在街上喊“稳赚不赔，快跟我买”，你多半会怀疑。网上也一样，只是把大街换成了手机群。凡是保证高收益还不亏本的，都要先问一句：真有这种好事，为什么轮到你？</p>
+          </div>
+
+          <div class="section-heading reveal delay-1">
+            <div><p class="kicker">谣言与真相</p><h2>点卡片翻面</h2></div>
+          </div>
+          <div class="myth-grid reveal delay-1">
+            <button class="myth-card" type="button">
+              <span class="myth-face front"><strong>“加入荐股群，跟着老师稳赚。”</strong><small>点击看真相</small></span>
+              <span class="myth-face back"><strong>真相</strong><span>很多荐股群是收割散户的骗局。</span></span>
+            </button>
+            <button class="myth-card" type="button">
+              <span class="myth-face front"><strong>“我有内幕消息。”</strong><small>点击看真相</small></span>
+              <span class="myth-face back"><strong>真相</strong><span>利用内幕信息交易违法，所谓消息常是陷阱。</span></span>
+            </button>
+            <button class="myth-card" type="button">
+              <span class="myth-face front"><strong>“保本高收益，稳赚不赔。”</strong><small>点击看真相</small></span>
+              <span class="myth-face back"><strong>真相</strong><span>高收益必然伴随高风险，保本高收益多是骗局。</span></span>
+            </button>
+          </div>
+
+          <div class="book-quote reveal delay-2">
+            <p>“我只想知道我会死在哪里，这样我就永远不去那里。”</p>
+            <span>All I want to know is where I'm going to die, so I'll never go there. —《穷查理宝典》</span>
+          </div>
+
+          <div class="lesson-actions">
+            <button class="text-button" type="button" data-view="overview">返回课程地图</button>
+            <button class="primary-button" type="button" data-view="lesson-mindset">下一课 <svg class="icon" aria-hidden="true"><use href="#icon-arrow"></use></svg></button>
+          </div>
+        </section>
+
+        <section class="view lesson" id="lesson-mindset">
+          <div class="lesson-head reveal">
+            <p class="kicker">第 15 课 · 心态与落地</p>
+            <h1>心态与第一笔交易：先小后大</h1>
+            <p>第一次下单，重点是熟悉流程，而不是马上赚钱。用小资金练习，感受真实波动和情绪变化。</p>
+          </div>
+
+          <div class="story-box reveal delay-1">
+            <strong>一个小故事</strong>
+            <p>第一次骑自行车，重点是先扶稳车把、别摔太惨，而不是马上参加比赛。第一笔交易也一样，用小钱练习流程和情绪，比急着赚大钱更重要。</p>
+          </div>
+
+          <div class="panel reveal delay-1">
+            <div class="panel-head">
+              <div><p class="kicker">动手实验</p><h2>模拟第一笔买入</h2></div>
+              <span class="stat-pill" id="tradeShares">可买 0 股</span>
+            </div>
+            <div class="calculator-grid">
+              <div>
+                <label for="tradeCapital">准备投入（元）</label>
+                <input id="tradeCapital" class="number-input" type="number" value="10000" min="100" step="100" />
+              </div>
+              <div>
+                <label for="tradePrice">买入价格（元）</label>
+                <input id="tradePrice" class="number-input" type="number" value="20" min="1" step="1" />
+              </div>
+            </div>
+            <p class="chart-hint" id="tradeHint">按 A股 100 股为 1 手计算，你大约可以买入 5 手。</p>
+          </div>
+
+          <div class="challenge reveal delay-2">
+            <div class="challenge-copy">
+              <p class="kicker">心态小测</p>
+              <h2>刚买入就下跌 8%，你更该怎么做？</h2>
+            </div>
+            <div class="challenge-actions">
+              <button class="secondary-button" type="button" data-mindset-answer="plan">检查计划，而不是冲动操作</button>
+              <button class="secondary-button" type="button" data-mindset-answer="panic">立刻全仓卖出</button>
+              <button class="secondary-button" type="button" data-mindset-answer="borrow">借钱加仓摊平</button>
+            </div>
+            <div class="challenge-feedback" id="mindsetFeedback">选一个答案试试。</div>
+          </div>
+
+          <div class="book-quote reveal delay-3">
+            <p>“今天能坐在树荫下，是因为很久以前有人种下了一棵树。”</p>
+            <span>Someone's sitting in the shade today because someone planted a tree a long time ago. —《滚雪球》</span>
+          </div>
+
+          <div class="lesson-actions">
+            <button class="text-button" type="button" data-view="overview">返回课程地图</button>
+            <button class="primary-button" type="button" data-view="quiz">去测验 <svg class="icon" aria-hidden="true"><use href="#icon-arrow"></use></svg></button>
+          </div>
+        </section>
+
+        <section class="view lesson" id="quiz">
+          <div class="lesson-head reveal">
+            <p class="kicker">综合测验</p>
+            <h1>检验一下你学得怎么样</h1>
+            <p>十道题，覆盖从市场直觉到风险控制的核心概念。</p>
+          </div>
+          <div class="quiz-card reveal delay-1">
+            <div id="quizBody"></div>
+            <div class="quiz-actions" id="quizActions"></div>
+          </div>
+          <div class="quiz-result" id="quizResult"></div>
+          <div class="lesson-actions">
+            <button class="text-button" type="button" data-view="overview">返回课程地图</button>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <footer class="footer">
+      <span>股市启蒙实验室 · New Money</span>
+      <span>这里不推荐股票，只提供认知工具。</span>
+    </footer>
+
+    <canvas id="confettiCanvas" aria-hidden="true"></canvas>
+    <script src="app.js"></script>
+  </body>
+</html>
